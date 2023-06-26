@@ -1,4 +1,4 @@
-use geosteiner_rs_template::geosteiner::{
+use steinertree_web_demo::geosteiner::{
     rs_safe_compute_esmt,
     Point,
 };
