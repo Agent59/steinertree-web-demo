@@ -2,8 +2,9 @@ use std::os::raw::{
     c_int,
     c_double,
 };
+use serde::{Serialize, Deserialize};
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
 pub struct Point {
     x: f64,
     y: f64,
@@ -13,7 +14,7 @@ impl Point {
     pub fn new(x: f64, y: f64) -> Self { Self { x, y } }
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Serialize)]
 pub struct Edge {
     p1: i32, // number of point 1
     p2: i32, // number of point 2
@@ -37,7 +38,7 @@ pub struct C_ESMT {
 }
 
 /// Contains information on a euclidian steiner tree.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize)]
 pub struct ESMT {
     pub sps: Vec<Point>,
     pub edges: Vec<Edge>
@@ -82,5 +83,17 @@ pub fn rs_safe_compute_esmt<const L: usize, const L2: usize>(nterms: i32, terms:
     }
 
     let c_esmt = unsafe { rs_compute_esmt(nterms, &c_terms[0]) };
+    ESMT::from_c_esmt(c_esmt)
+}
+
+/// Works the same as `rs_safe_compute_esmt` but takes a vector instead.       
+pub fn rs_safe_compute_esmt_vec(terms: &Vec<Point>) -> ESMT {
+    let mut c_terms = Vec::new();
+    for p in terms {
+        c_terms.push(p.x);
+        c_terms.push(p.y);
+    }
+
+    let c_esmt = unsafe { rs_compute_esmt((c_terms.len() / 2) as i32, &c_terms[0]) };
     ESMT::from_c_esmt(c_esmt)
 }

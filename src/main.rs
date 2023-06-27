@@ -1,19 +1,26 @@
-use steinertree_web_demo::geosteiner::{
-    rs_safe_compute_esmt,
-    Point,
+use actix_web::{web, App, HttpServer, Responder, get, Result};
+use actix_files::NamedFile;
+
+use steinertree_web_demo::{
+    st_service::st_config,
+    home_service::home_config,
 };
 
-fn main() { 
-    let terms: [Point; 4] = [
-        Point::new(0.0, 0.0),
-        Point::new(0.0, 1.0),
-        Point::new(1.0, 0.0),
-        Point::new(1.0, 1.0),
-    ];
-    
-    let esmt = rs_safe_compute_esmt::<4, 8>(4, &terms);
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    HttpServer::new(|| {
+        App::new()
+            .configure(st_config)
+            .configure(home_config)
+            .service(test)
+    })
+    .bind(("127.0.0.1", 8080))?
+    .run()
+    .await
+}
 
-    //println!("{:?}", esmt.sps);
-    //println!("{:?}", esmt.edges);
-    println!("{:?}", esmt);
+#[get("/test")]
+async fn test() -> Result<NamedFile> {
+    let file = NamedFile::open("./src/html_files/steinertree.html")?;
+    Ok(file)
 }

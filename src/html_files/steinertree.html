@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Steinertree Solver</title>
+
+<style>
+body {
+    background-color: #222425;
+    color: #dedcd9;
+}
+
+button {
+    z-index: 100;
+}
+
+input {
+    z-index: 100;
+}
+
+.term {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    position: absolute;
+    background-color: gray;
+    z-index: 1;
+}
+
+.sp {
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    position: absolute;
+    background-color: lightgray;
+    z-index: 1;
+}
+</style>
+
+</head>
+
+<body>
+<div style="z-index: 100; position: absolute; top: 0; left: 0">
+    <h1>Steinertree Solver</h1>
+
+    <button type="button" id="get_st_solution_btn">Solve Steinertree</button>
+    </br>
+    <button type="button" id="clear_esmt">Clear Everything</button>
+    </br></br>
+
+    <input type="number" id="term_input_x" min="0" max="8" placeholder="terminal x">
+    </br>
+    <input type="number" id="term_input_y" min="0" max="15" placeholder="terminal y">
+    </br>
+    <button type="button" id="add_term">Add terminal (point)</button>
+</div>
+</body>
+
+<script> //utility
+
+    const api_solve_url = "http://localhost:8080/steinertree/calc_tree";
+    let terms = [];
+    let sps = [];
+    let edges = [];
+
+    class Point {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    // for testing purposes
+    for (x = 0; x < 2; x++) {
+        for (y = 0; y < 2; y++) {
+            terms.push(new Point(x, y));
+            dom_add_point("term", "term", x, y);
+        }
+    }
+
+    function dom_add_point(name, css_class, x, y) {
+        let element = document.createElement("canvas");
+        element.classList.add(css_class);
+        element.setAttribute("id", name + "|" + x + "|" + y);
+        element.style.top = (x * 100) + "px";
+        element.style.left = (y * 100) + "px";
+        document.body.appendChild(element);
+    }
+
+    function clear_points(name, list) {
+        for (i = 0; i < list.length; i++) {
+            let id = name + "|" + list[i].x + "|" + list[i].y;
+            console.log("clearing id: " + id);
+            document.getElementById(id).remove();
+        }
+        list = [];
+        return list;
+    }
+</script>
+
+<script> // events
+    
+    document.getElementById("get_st_solution_btn")
+        .addEventListener("click", get_st_solution, false);
+
+    function get_st_solution() {
+        sps = clear_points("sp", sps);
+        edges = []; // TODO remove from dom
+
+        fetch(api_solve_url, {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify({ "terms": terms }),
+        })
+            .then((response) => response.json())
+            .then(function(json) {
+                sps = json.sps;
+                for (i = 0; i < sps.length; i++) {
+                    let [x, y] = [sps[i].x, sps[i].y];
+                    dom_add_point("sp", "sp", x, y);
+                }
+
+                // TODO add edges
+
+                console.log(json);
+            });
+    }
+
+    
+    document.getElementById("add_term")
+        .addEventListener("click", add_term, false);
+
+    function add_term() {
+        let x = parseFloat(document.getElementById("term_input_x").value);
+        let y = parseFloat(document.getElementById("term_input_y").value);
+
+        if (isNaN(x) || isNaN(y) || x > 8 || y > 15) { return; }
+        for (i = 0; i < terms.length; i++) {
+            if (terms[i].x === x && terms[i].y === y) {
+                return;
+            }
+        }
+        terms.push(new Point(x, y));
+        dom_add_point("term", "term", x, y);
+    }
+
+
+    document.getElementById("clear_esmt")
+        .addEventListener("click", clear_esmt, false);
+    
+    function clear_esmt() {
+        terms = clear_points("term", terms);
+        sps = clear_points("sp", sps);
+        edges = []; // TODO remove from dom
+    }
+</script>
+</html> 
