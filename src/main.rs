@@ -1,4 +1,4 @@
-use actix_web::{web, App, HttpServer, Responder, get, Result};
+use actix_web::{App, HttpServer, get, Result};
 use actix_files::NamedFile;
 
 use steinertree_web_demo::{
@@ -14,7 +14,7 @@ async fn main() -> std::io::Result<()> {
             .configure(home_config)
             .service(test)
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(("0.0.0.0", 1515))?
     .run()
     .await
 }
