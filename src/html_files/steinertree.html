@@ -4,35 +4,48 @@
 <title>Steinertree Solver</title>
 
 <style>
-body {
-    background-color: #222425;
-    color: #dedcd9;
-}
-
-button {
+:root {
+    --bgclr: #222425;
+    --txtclr: #dedcd9;
+    --termclr: gray;
+    --spclr: goldenrod;
+    --edgeclr: gold;
     z-index: 100;
-}
 
-input {
-    z-index: 100;
+    background-color: var(--bgclr);
+    color: var(--txtclr);
+
 }
 
 .term {
-    height: 50px;
-    width: 50px;
+    height: 35px;
+    width: 35px;
+    transform: translate(-50%, -50%);
     border-radius: 50%;
     position: absolute;
-    background-color: gray;
-    z-index: 1;
+    z-index: 3;
+    background-color: var(--termclr);
+    opacity: 0.75;
 }
 
 .sp {
-    height: 25px;
-    width: 25px;
+    height: 20px;
+    width: 20px;
+    transform: translate(-50%, -50%);
     border-radius: 50%;
     position: absolute;
-    background-color: lightgray;
     z-index: 1;
+    background-color: var(--spclr);
+}
+
+.edge {
+    height: 0px;
+    transform-origin: 0% 0%;
+    position: absolute;
+    z-index: 0;
+    background-color: var(--edgeclr);
+    border: 4px solid var(--edgeclr);
+    border-radius: 12px;
 }
 </style>
 
@@ -47,53 +60,97 @@ input {
     <button type="button" id="clear_esmt">Clear Everything</button>
     </br></br>
 
-    <input type="number" id="term_input_x" min="0" max="8" placeholder="terminal x">
+    <input type="number" id="term_input_x" min="1" max="8" placeholder="terminal x">
     </br>
-    <input type="number" id="term_input_y" min="0" max="15" placeholder="terminal y">
+    <input type="number" id="term_input_y" min="1" max="16" placeholder="terminal y">
     </br>
     <button type="button" id="add_term">Add terminal (point)</button>
+    </br>
+    <button type="button" id="gen_rand_term">Generate random terminal</button>  
 </div>
 </body>
 
 <script> //utility
 
     const api_solve_url = "http://localhost:8080/steinertree/calc_tree";
+    const mc = 100; // coordinate multiplier
+    const minx = 1;
+    const miny = 1;
+    const maxx = 8;
+    const maxy = 15;
+
     let terms = [];
     let sps = [];
     let edges = [];
 
-    class Point {
+    class Point { // is also used to represent edges
         constructor(x, y) {
-            this.x = x;
-            this.y = y;
+            this.x = x; // p1 if used as an edge
+            this.y = y; // p2 if used as an edge
         }
     }
 
     // for testing purposes
     for (x = 0; x < 2; x++) {
         for (y = 0; y < 2; y++) {
-            terms.push(new Point(x, y));
-            dom_add_point("term", "term", x, y);
+            terms.push(new Point(x + 1, y + 2));
+            dom_add_point("term", "term", x + 1, y + 2);
         }
     }
 
     function dom_add_point(name, css_class, x, y) {
-        let element = document.createElement("canvas");
+        let element = document.createElement("div");
         element.classList.add(css_class);
         element.setAttribute("id", name + "|" + x + "|" + y);
-        element.style.top = (x * 100) + "px";
-        element.style.left = (y * 100) + "px";
+        element.style.top = (x * mc) + "px";
+        element.style.left = (y * mc) + "px";
         document.body.appendChild(element);
     }
 
     function clear_points(name, list) {
         for (i = 0; i < list.length; i++) {
             let id = name + "|" + list[i].x + "|" + list[i].y;
-            console.log("clearing id: " + id);
             document.getElementById(id).remove();
         }
         list = [];
         return list;
+    }
+
+    function dom_add_edge(p1, p2) {
+        let [x1, y1] = get_edge_point(p1);
+        let [x2, y2] = get_edge_point(p2);
+
+        let element = document.createElement("div");
+        element.classList.add("edge");
+        element.setAttribute("id", "edge|" + p1 + "|" + p2);
+
+        // vector from point 1 to point 2
+        let x1_x2_vec = (x2 - x1);
+        let y1_y2_vec = (y2 - y1)
+
+        // center of line
+        let sx = (x1_x2_vec) / 2 + x1;
+        let sy = (y1_y2_vec) / 2 + y1;
+
+        let length = Math.sqrt(x1_x2_vec ** 2 + y1_y2_vec ** 2);
+        let angle = Math.PI - Math.atan2(-x1_x2_vec, y1_y2_vec);
+
+        element.style.top = (sx * mc) + "px";
+        element.style.left = (sy * mc) + "px";
+        element.style.width = (length * mc) + "px";
+        element.style.transform = "rotate(" + angle + "rad) translate(-50%, -50%)";
+
+        document.body.appendChild(element);
+    }
+
+    function get_edge_point(p) {
+        let p_x_y;
+        if (p < terms.length) {
+            p_x_y = [terms[p].x, terms[p].y];
+        } else {
+            p_x_y = [sps[p - terms.length].x, sps[p - terms.length].y];
+        }
+        return p_x_y;
     }
 </script>
 
@@ -104,7 +161,7 @@ input {
 
     function get_st_solution() {
         sps = clear_points("sp", sps);
-        edges = []; // TODO remove from dom
+        edges = clear_points("edge", edges);
 
         fetch(api_solve_url, {
             method: "POST",
@@ -121,9 +178,14 @@ input {
                     dom_add_point("sp", "sp", x, y);
                 }
 
-                // TODO add edges
-
-                console.log(json);
+                // conversion needs to be done because the json object
+                // uses p1 and p2 instead of x and y
+                e = json.edges;
+                for (i = 0; i < e.length; i++) {
+                    let [x, y] = [e[i].p1, e[i].p2];
+                    edges.push(new Point(x, y));
+                    dom_add_edge(x, y);
+                }
             });
     }
 
@@ -135,7 +197,7 @@ input {
         let x = parseFloat(document.getElementById("term_input_x").value);
         let y = parseFloat(document.getElementById("term_input_y").value);
 
-        if (isNaN(x) || isNaN(y) || x > 8 || y > 15) { return; }
+        if (isNaN(x) || isNaN(y) || minx > x || x > maxx || miny > y || y > maxy) { return; }
         for (i = 0; i < terms.length; i++) {
             if (terms[i].x === x && terms[i].y === y) {
                 return;
@@ -152,7 +214,19 @@ input {
     function clear_esmt() {
         terms = clear_points("term", terms);
         sps = clear_points("sp", sps);
-        edges = []; // TODO remove from dom
+        edges = clear_points("edge", edges);
+    }
+
+    document.getElementById("gen_rand_term")
+        .addEventListener("click", gen_rand_term, false);
+
+    function gen_rand_term() {
+        let x = Math.random() * (maxx - minx) + minx;
+        let y = Math.random() * (maxy - miny) * miny;
+
+        terms.push(new Point(x, y));
+        dom_add_point("term", "term", x, y);
     }
 </script>
+
 </html> 
