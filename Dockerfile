@@ -1,18 +1,21 @@
-FROM rust:1.7 as builder
+FROM rust:latest as build
 
 RUN USER=root cargo new --bin steinertree-web-demo
-WORKDIR ./steinertree-web-demo
+WORKDIR /steinertree-web-demo
+
 COPY ./Cargo.toml ./Cargo.toml
-RUN cargo build --release --features rebuild_c
-RUN rm src/*.rs
-RUN rm -rf src/geosteiner
+COPY ./build.rs ./build.rs
+COPY ./src/ ./src/
 
-ADD . ./
+# build the C libraries (just like with --features rebuild_c which doesn't work in docker)
+RUN make -C ./src/geosteiner/ librs_geosteiner.la
 
-RUN rm ./target/release/deps/steinertree-web-demo*
 RUN cargo build --release
+RUN rm src/*.rs
 
+FROM rust:latest
 
-FROM debian:buster-slim
-ARG APP=/usr/src/app
+COPY --from=build /steinertree-web-demo/target/release/steinertree-web-demo ./steinertree-web-demo
+COPY ./src/html_files/ ./src/html_files/
 
+CMD ["/steinertree-web-demo"]
