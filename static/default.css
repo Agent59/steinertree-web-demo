@@ -1,0 +1,20 @@
+:root {
+    --bgclr: #222425;
+    --txtclr: #dedcd9;
+    --termclr: gray;
+    --spclr: goldenrod;
+    --edgeclr: gold;
+    --linkclr: #551a8b;
+    --red: darkred;/*firebrick;*/
+    --green: darkgreen;
+    z-index: 100;
+
+    background-color: var(--bgclr);
+    color: var(--txtclr);
+    font-family: Noto Sans, sans-serif;
+}
+
+a {
+    color: var(--linkclr);
+    text-decoration: none;
+}

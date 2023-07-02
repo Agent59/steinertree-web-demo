@@ -16,6 +16,6 @@ RUN rm src/*.rs
 FROM rust:latest
 
 COPY --from=build /steinertree-web-demo/target/release/steinertree-web-demo ./steinertree-web-demo
-COPY ./src/html_files/ ./src/html_files/
+COPY ./static/ ./static/
 
 CMD ["/steinertree-web-demo"]

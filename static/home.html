@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="/default.css">
+
+<title>Physarum polycephalum</title>
+
+<style>
+body {
+    margin: 0 0;
+}
+
+.st-link {
+   position: absolute;
+   top: 5px;
+   right: 5px;
+   width: 150px;
+   height: 70px;
+   border-style: solid;
+   border-radius: 10px;
+   border-color: var(--txtclr);
+   font-weight: bold;
+   background: rgba(0, 0, 0, 0); 
+   color: var(--txtclr);
+   padding: 1px 1px;
+   text-align: center;
+   transition: 0.2s;
+}
+
+.st-link:hover {
+    background: rgba(0 ,0 , 0, 1);
+    background-color: var(--txtclr);
+    color: var(--bgclr);
+}
+
+h1 {
+    text-align: center;
+}
+
+p {
+    text-align: left;
+}
+
+.info-container {
+    margin: 0 auto;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+
+.info-item {
+    width: 40%;
+    padding: 10px 5%;
+}
+
+.info-item * {
+    margin: 0 0;
+    padding: 0 0;
+}
+
+.info-item li {
+    padding: 4px 0;
+}
+
+.authors {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    margin: 0 0;
+    font-size: 15px;
+}
+</style>
+
+</head>
+
+<body>
+<!--<p class="authors">Olli, Benno, Paul</p>-->
+
+<a href="/steinertree" class="st-link">Ein Programm zum lösen von Steinerbäumen</a>
+
+<h1>Physarum polycephalum</h1>
+
+<div class="info-container">
+    <div class="info-item">
+        <h3>Allgemeines</h3>
+        <img src="/images/desc1.png" width=271,5 height=188>
+        <br>
+        <ul>
+            <li>Physarum polycephalum ist eine Schleimpilz-Art</li>
+            <li>der Schleimpilz hat mehrere Kerne, besteht aber nur aus einer Zelle</li>
+            <li>der Zellkern kann sich teilen, ohne dass sich die Zelle selbst teilt
+                <br> → dabei kann sich Physarum polycephalum über mehrere Quadratmeter ausbreiten
+            </li>
+        </ul>
+    </div>
+
+    <div class="info-item">
+        <h3>Aussehen</h3>
+        <img src="/images/desc2.png" width=271,5 height=188>
+        <br>
+        <ul>
+            <li>der Fruchtkörper des Schleimpilzes wird Sporokarpe genannt</li>
+            <li>die Sporokarpen sind gelb bis grau und haben eine scheibenförmige bzw. aufgerollte Form</li>
+            <li>die Hülle des Physarum polycephalum ist weiß bis blassgelb</li>
+            <li>der Stiel ist schlank biegsam und ineinander verdreht</li>
+            <li>Physarum polycephalum kommt auf verrottendem Holz und gelegentlich auch auf lebenden Pflanzen vor</li>
+        </ul>
+    </div>
+
+    <div class="info-item">
+        <h3>Verbreitung und Habitate</h3>
+        <br>
+        <p>
+            Schleimpilze kommen hauptsächlich in den Wäldern der gemäßigten Breiten vor,
+            da Schleimpilze sich in subtropischen bis tropischen Regionen nur sehr schwer
+            vermehren können.
+            Das ist hauptsächlich dadurch bedingt,
+            dass die Sporen zur Verbreitung in den windstillen und häufig von
+            starkem Regen geprägten Gebieten sich kaum ausbreiten können.
+            Auch die sauren Böden und die durch die hohe Luftfeuchtigkeit begünstigte
+            Schimmelpilze stellen schwere Hindernisse außerhalb
+            der gemäßigten Klimazonen für die Schleimpilze dar.
+            <br><br>
+            Meistens bildet sich das Physarum polycephalum,
+            auf dem Fruchtkörper von Pilzen oder besiedelt abgestorbenes Holz.
+            Seltener jedoch bildet er sich auf der Oberfläche von lebenden Pflanzen.
+        </p>
+    </div>
+
+    <div class="info-item">
+        <h3>Besonderheiten /<br>Nutzen für die Wissenschaft</h3>
+        <img src="/images/desc3.png" width=210 height=126,6>
+        <br>
+        <ul>
+            <li>der Physarum polycephalum wird in Laboren oft als Modellorganismus benutzt</li>
+            <li>diese Schleimpilz-Art ist aufgrund der Größe der Zelle gut geeignet für Laborversuche, da viel mit bloßem Auge zu erkennen ist</li>
+            <li>es wurde nachgewiesen, dass Physarum polycephalum den kürzesten Weg zwischen beliebig vielen Punkten findet</li>
+            <li>das größte Exemplar ist 5,54m² groß</li>
+        </ul>
+    </div>
+
+    <div class="info-item">
+        <h3><a href="/steinertree">Das Steinerbaumproblem</a></h3>
+        <br>
+        <p>
+            Bei der Lösung dieses Problems versucht man alle gegebene Punkte (Terminale)
+            mit dem kürzesten Weg zu verbinden, dabei dürfen beliebig weitere Punkte hinzugefügt werden.
+            Algorithmen zur Lösung dieses Problems kommen z.B. zur Anwendung,
+            um ein möglichst effizientes Schienennetz oder Computernetzwerk zu berechnen.
+            Doch den kürzesten Weg zu finden klingt einfacher als es ist.
+            Zur Berechnung eines minimalen Spannbaums, also das Finden des kürzesten Weges ohne Hinzufügen weiterer Punkte,
+            gibt es Algorithmen die eine Lösung in polynomieller Zeit finden (die Lösungszeit wächst mit der Anzahl der Punkte in Form einer Polynomfunktion).
+            Algorithmen für das Steinerbaumproblem gelingt dies jedoch noch nicht in polynomieller Zeit.
+            Die Schwierigkeit beim lösen des Steinerbaumproblems liegt vor allem im generieren geeigneter zusätzlicher Punkte (Steinerpunkte). 
+            Umso beeindruckender ist es, dass der Einzeller Physarum polycephalum, ohne Gehirn, seine Fähigkeit Steinerbäume zu lösen am Schienennetz von Tokio demonstriert.
+        </p>
+    </div>
+    <div class="info-item">
+        <br><br>
+        <img src="/images/tokio.png" width=291 height=498,7>
+    </div>
+</div>
+</body>
+</html> 

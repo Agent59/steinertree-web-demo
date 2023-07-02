@@ -1,10 +1,12 @@
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{get, web, Result};
+use actix_files::NamedFile;
 
 pub fn home_config(cfg: &mut web::ServiceConfig) {
     cfg.service(home);
 }
 
 #[get("/")]
-async fn home() -> impl Responder {     
-    "HOME"
+async fn home() -> Result<NamedFile> {
+    let path = "./static/home.html";
+    Ok(NamedFile::open(path)?)
 }

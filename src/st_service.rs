@@ -1,4 +1,4 @@
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder, Result};
+use actix_web::{get, post, web, Responder, Result};
 use actix_files::NamedFile;
 use serde::Deserialize;
 
@@ -31,6 +31,6 @@ async fn calc_st(json: web::Json<TermsJson>) -> Result<impl Responder> {
 
 #[get("")]
 async fn st_page() -> Result<NamedFile> {
-    let path = "./src/html_files/steinertree.html";
+    let path = "./static/steinertree.html";
     Ok(NamedFile::open(path)?)
 }

@@ -1,5 +1,5 @@
-use actix_web::{App, HttpServer, get, Result};
-use actix_files::NamedFile;
+use actix_web::{App, HttpServer, Result, get};
+use actix_files::{Files, NamedFile};
 
 use steinertree_web_demo::{
     st_service::st_config,
@@ -12,15 +12,16 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .configure(st_config)
             .configure(home_config)
-            .service(test)
+            .service(default_style)
+            .service(Files::new("/images", "static/images").show_files_listing())
     })
     .bind(("0.0.0.0", 1515))?
     .run()
     .await
 }
 
-#[get("/test")]
-async fn test() -> Result<NamedFile> {
-    let file = NamedFile::open("./src/html_files/steinertree.html")?;
-    Ok(file)
+#[get("/default.css")]
+async fn default_style() -> Result<NamedFile> {
+    let path = "./static/default.css";
+    Ok(NamedFile::open(path)?)
 }

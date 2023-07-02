@@ -1,20 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="/default.css">
+
 <title>Steinertree Solver</title>
 
 <style>
 :root {
-    --bgclr: #222425;
-    --txtclr: #dedcd9;
-    --termclr: gray;
-    --spclr: goldenrod;
-    --edgeclr: gold;
     z-index: 100;
+}
 
-    background-color: var(--bgclr);
+.conf-box {
+    z-index: 100;
+    position: absolute;
+    top: 0;
+    left: 8px;
+}
+
+.back-link {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 50px;
+  height: 25px;
+  border-style: solid;
+  border-radius: 8px;
+  border-color: var(--txtclr);
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0); 
+  color: var(--txtclr);
+  padding: 1px 1px;
+  text-align: center;
+  transition: 0.2s;
+}
+
+.back-link:hover {
+   background: rgba(0 ,0 , 0, 1);
+   background-color: var(--txtclr);
+   color: var(--bgclr);
+}
+
+
+button {
+    margin-top: 4px;
+    width: 125px;
+    height: 40px;
+    border-radius: 10px;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0);
     color: var(--txtclr);
+    border-color: var(--txtclr);
+}
 
+button:hover {
+    cursor: pointer;
+    color: var(--txtclr);
+    background: rgba(0, 0, 0, 1);
+}
+
+
+.red-btn {
+    color: var(--red);
+    border-color: var(--red);
+    transition-duration: 0.2s;
+}
+
+.red-btn:hover {
+    background-color: var(--red);
+}
+
+.yellow-btn {
+    color: var(--spclr);
+    border-color: var(--edgeclr);
+}
+
+.yellow-btn:hover {
+    background-color: var(--spclr);
+}
+
+.green-btn {
+    color: var(--green);
+    border-color: var(--green);
+}
+
+.green-btn:hover {
+    background-color: var(--green);
+}
+
+input {
+    width: 120px;
+    height: 15px;
+    border-radius: 5px;
+    color: var(--txtclr);
+    background: rgba(0, 0, 0, 0);
+    border-color: var(--txtclr);
+}
+
+input:focus {
+    background: rgba(0, 0, 0, 1);
+    color: var(--bgclr);
+    background-color: var(--txtclr);
+    outline: none;
 }
 
 .term {
@@ -52,21 +139,24 @@
 </head>
 
 <body>
-<div style="z-index: 100; position: absolute; top: 0; left: 0">
+<a href="/" class="back-link">Back</a>
+
+<div class="conf-box">
     <h1>Steinertree Solver</h1>
 
-    <button type="button" id="get_st_solution_btn">Solve Steinertree</button>
-    </br>
-    <button type="button" id="clear_esmt">Clear Everything</button>
-    </br></br>
-
+    <button type="button" id="gen_rand_term" class="green-btn">Generate random terminal</button>
+    <br>
+    <button type="button" id="add_term" class="green-btn">Add specific terminal</button>
+    <br>
     <input type="number" id="term_input_x" min="1" max="8" placeholder="terminal x">
-    </br>
+    <br>
     <input type="number" id="term_input_y" min="1" max="16" placeholder="terminal y">
-    </br>
-    <button type="button" id="add_term">Add terminal (point)</button>
-    </br>
-    <button type="button" id="gen_rand_term">Generate random terminal</button>  
+    <br><br>
+
+
+    <button type="button" id="get_st_solution_btn" class="yellow-btn">Solve steinertree</button>
+    <br>
+    <button type="button" id="clear_esmt" class="red-btn">Clear everything</button>
 </div>
 </body>
 
@@ -89,15 +179,7 @@
             this.y = y; // p2 if used as an edge
         }
     }
-
-    // for testing purposes
-    for (x = 0; x < 2; x++) {
-        for (y = 0; y < 2; y++) {
-            terms.push(new Point(x + 1, y + 2));
-            dom_add_point("term", "term", x + 1, y + 2);
-        }
-    }
-
+    
     function dom_add_point(name, css_class, x, y) {
         let element = document.createElement("div");
         element.classList.add(css_class);
